@@ -8,6 +8,22 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+        <StackPanel Margin="12">
+            <TextBlock Text="Cognitive Services Text Analytics Demo for UWP" Style="{ThemeResource HeaderTextBlockStyle}" Margin="12"/>
+            <TextBox x:Name="txtSource" TextWrapping="Wrap" Margin="12" PlaceholderText="type or paste the text to analyse here" Text=""/>
+            <Button x:Name="btnAnalyze" Content="Analyze" Margin="12" Width="100" Click="btnAnalyze_Click" />
+            <Grid Padding="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" VerticalAlignment="Top">
+                    <TextBlock x:Name="lblLanguage" Margin="12, 12, 12, 0" Style="{ThemeResource BodyTextBlockStyle}" TextWrapping="Wrap" Text="Language: N/A"/>
+                    <TextBlock x:Name="lblKeyPhrases" Margin="12, 12, 12, 0" Style="{ThemeResource BodyTextBlockStyle}" TextWrapping="Wrap" Text="Key phrases: N/A"/>
+                    <TextBlock x:Name="lblSentiment" Margin="12, 12, 12, 12" Style="{ThemeResource BodyTextBlockStyle}" TextWrapping="Wrap" Text="Sentiment: N/A"/>
+                </StackPanel>
+                <TextBox x:Name="lblJSON" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" PlaceholderText="JSON results will appear here (not implemented yet)" />
+            </Grid>
+        </StackPanel>
     </Grid>
 </Page>
