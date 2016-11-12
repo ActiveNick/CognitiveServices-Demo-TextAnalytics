@@ -5,13 +5,83 @@
     xmlns:local="using:CognitiveServices_Demo_TextAnalytics"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:twitter="using:Microsoft.Toolkit.Uwp.Services.Twitter"
     mc:Ignorable="d">
 
+    <Page.Resources>
+        <DataTemplate x:Key="TwitterSchemaTemplate"
+                  x:DataType="twitter:Tweet">
+            <Border Margin="12,0,12,12"
+              Padding="12"
+              Background="White"
+              BorderBrush="#FFCCCCCC"
+              BorderThickness="1"
+              CornerRadius="4">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.RowSpan="2"
+                   Width="50"
+                   Height="50"
+                   Margin="0,0,12,0"
+                   VerticalAlignment="Top"
+                   Source="{Binding User.ProfileImageUrl}"
+                   Stretch="Uniform" />
+                        <TextBlock Grid.Column="1"
+                       FontWeight="SemiBold"
+                       Text="{x:Bind User.Name}" />
+                        <TextBlock Grid.Row="1"
+                       Grid.Column="1"
+                       VerticalAlignment="Top"
+                       FontWeight="Light"
+                       Text="{x:Bind User.ScreenName}" />
+                        <Image Grid.RowSpan="2"
+                   Grid.Column="2"
+                   Width="24"
+                   Height="24"
+                   VerticalAlignment="Top"
+                   Source="/SamplePages/Twitter Service/TwitterLogo.png"
+                   Stretch="Uniform" />
+                    </Grid>
+                    <TextBlock Grid.Row="1"
+                     FontWeight="SemiBold"
+                     Text="{x:Bind Text}"
+                     TextTrimming="CharacterEllipsis"
+                     TextWrapping="WrapWholeWords" />
+                    <TextBlock Grid.Row="2"
+                     HorizontalAlignment="Right"
+                     FontWeight="ExtraLight"
+                     Text="{x:Bind CreationDate}" />
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </Page.Resources>
+
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <StackPanel Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Margin="12">
             <TextBlock Text="Cognitive Services Text Analytics Demo for UWP" Style="{ThemeResource HeaderTextBlockStyle}" Margin="12"/>
             <TextBox x:Name="txtSource" TextWrapping="Wrap" Margin="12" PlaceholderText="type or paste the text to analyse here" Text=""/>
-            <Button x:Name="btnAnalyze" Content="Analyze" Margin="12" Width="100" Click="btnAnalyze_Click" />
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="btnAnalyze" Content="Analyze" Margin="12" Width="100" Click="btnAnalyze_Click" />
+                <Button x:Name="btnTwitterConnect" Content="Connect to Twitter" Margin="12" Click="btnTwitterConnect_Click"/>
+            </StackPanel>
             <Grid Padding="12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"></ColumnDefinition>
@@ -25,5 +95,26 @@
                 <TextBox x:Name="lblJSON" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" PlaceholderText="JSON results will appear here (not implemented yet)" />
             </Grid>
         </StackPanel>
+        <ScrollViewer Grid.Row="1">
+            <ListView x:Name="ListView"
+                        Grid.Row="3"
+                        Margin="0,12,0,0"
+                        IsItemClickEnabled="True"
+                        ItemTemplate="{StaticResource TwitterSchemaTemplate}"
+                        SelectionMode="None" ItemClick="ListView_ItemClick">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <ListViewItemPresenter PointerOverBackground="{x:Null}" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+        </ScrollViewer>
     </Grid>
 </Page>

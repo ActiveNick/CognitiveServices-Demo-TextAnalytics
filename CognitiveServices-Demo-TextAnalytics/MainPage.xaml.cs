@@ -13,6 +13,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Microsoft.Toolkit.Uwp.Services.Twitter;
+using Windows.UI.Popups;
 
 // Analyse a text string to extract the sentiment and the key phrases
 // TO DO: Also extract the detected language
@@ -23,6 +25,12 @@ namespace CognitiveServices_Demo_TextAnalytics
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        // TO DO: IMPORTANT - These are my Twitter keys and I may change them when I feel like it.
+        // Go get your own at http://dev.twitter.com.
+        string twConsumerKey = "ZSxGGzitmQsyqydCmmmDp9i7D";
+        string twConsumerSecret = "yyGudrTlBtGCh9KtUASD685xPXC2TgTb6jx8z8dJ5v7alBeI4C";
+        string twCallbackUri = "http://ageofmobility.com";  // Dummy callback url because I'm not really using it
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -81,6 +89,46 @@ namespace CognitiveServices_Demo_TextAnalytics
             // Display results
             lblSentiment.Text = "Sentiment: " + sentimentPercentage.ToString();
             lblKeyPhrases.Text = "Key Phrases: " + allKeyPhrases;
+        }
+
+        private async void btnTwitterConnect_Click(object sender, RoutedEventArgs e)
+        {
+            TwitterService.Instance.Initialize(twConsumerKey, twConsumerSecret, twCallbackUri);
+
+            if (!await TwitterService.Instance.LoginAsync())
+            {
+                var error = new MessageDialog("Unable to log to Twitter");
+                await error.ShowAsync();
+                return;
+            }
+
+            TwitterUser user;
+            try
+            {
+                user = await TwitterService.Instance.GetUserAsync();
+            }
+            catch (TwitterException ex)
+            {
+                if ((ex.Errors?.Errors?.Length > 0) && (ex.Errors.Errors[0].Code == 89))
+                {
+                    await new MessageDialog("Invalid or expired token. Logging out. Re-connect for new token.").ShowAsync();
+                    TwitterService.Instance.Logout();
+                    return;
+                }
+                else
+                {
+                    throw ex;
+                }
+            }
+
+            ListView.ItemsSource = await TwitterService.Instance.GetUserTimeLineAsync(user.ScreenName, 50);
+        }
+
+        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            Tweet tw = (Tweet)e.ClickedItem;
+
+            txtSource.Text = tw.Text;
         }
     }
 }
