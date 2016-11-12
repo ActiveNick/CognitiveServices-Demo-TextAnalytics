@@ -14,8 +14,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
+// Analyse a text string to extract the sentiment and the key phrases
+// TO DO: Also extract the detected language
 namespace CognitiveServices_Demo_TextAnalytics
 {
     /// <summary>
